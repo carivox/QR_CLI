@@ -5,7 +5,6 @@ import qrcode
 
 
 def sanitize_filename(url: str) -> str:
-    # Entfernung von unerlaubten Zeichen
     clean_url = re.sub(r"^https?://", "", url)
     clean_url = re.sub(r'[\\/*?:"<>|]', "", clean_url)
 
@@ -24,23 +23,19 @@ def generate_qr():
     print()
     print("╔══════════════════════════════╗")
     print("║     QR-Code Generator CLI    ║")
-    print("║        © Lukas Broda         ║")
     print("╚══════════════════════════════╝")
     print()
 
-    #URL abfragen
     url = input("Bitte füge den Link ein: ").strip()
 
     if not url:
         print("Fehler: Es wurde kein Link eingegeben.")
         return
 
-    #Dateinamen generieren
     filename = sanitize_filename(url) + ".png"
     download_dir = get_download_path()
     output_path = download_dir / filename
 
-    #QR Code erstellen
     print("\nGeneriere QR-Code...")
     qr = qrcode.QRCode(
         version=1,
@@ -51,11 +46,9 @@ def generate_qr():
     qr.add_data(url)
     qr.make(fit=True)
 
-    #Speichern als PNG
     img = qr.make_image(fill_color="black", back_color="white")
 
     try:
-        # Ordner erstellen, falls er aus irgendeinem Grund nicht existiert
         download_dir.mkdir(parents=True, exist_ok=True)
 
         img.save(output_path)
